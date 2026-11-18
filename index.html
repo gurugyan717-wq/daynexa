@@ -1,0 +1,220 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#101d32">
+<title>DAYNEXA — Understand Your Day</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f3f6fa;color:#17243a;font-family:Arial,sans-serif}
+header{background:#101d32;color:white;padding:25px 20px 30px;border-radius:0 0 25px 25px}
+.brand{color:#53dfbd;font-weight:bold;letter-spacing:4px;font-size:21px}
+header p{color:#c3cede}
+main{max-width:700px;margin:auto;padding:18px}
+h2{font-size:20px}
+.card{background:white;border-radius:17px;padding:18px;margin:14px 0;box-shadow:0 3px 15px #15243a0c}
+.hero{background:#182e48;color:white}
+.hero strong{font-size:42px;color:#53dfbd}
+.track{height:10px;background:#dce5ed;border-radius:20px;overflow:hidden;margin:12px 0}
+.fill{height:100%;background:#21b99a;width:0%;transition:.3s}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.stat strong{display:block;font-size:27px;color:#078a78;margin-bottom:6px}
+input,select{width:100%;padding:13px;border:1px solid #d5deea;border-radius:10px;margin:6px 0;font-size:15px;background:white}
+button{border:0;background:#087e70;color:white;padding:12px 16px;border-radius:10px;font-weight:bold;cursor:pointer}
+button.secondary{background:#e8f3f1;color:#087e70}
+button.danger{background:#fff0ef;color:#b33b35}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.item{padding:13px 0;border-bottom:1px solid #edf0f4}
+.item:last-child{border:0}
+.done{text-decoration:line-through;color:#8b98a8}
+nav{position:sticky;bottom:0;background:white;display:flex;justify-content:space-around;padding:10px 2px;border-top:1px solid #e3e9ef}
+nav button{background:white;color:#65738a;padding:9px 5px;font-size:11px;flex:1}
+nav button.active{color:#087e70;background:#eaf6f3}
+.page{display:none}
+.page.active{display:block}
+small,.muted{color:#77869a}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">DAYNEXA</div>
+  <p>Your Life. Your Progress.</p>
+  <h2>Understand your day.<br>Transform your life.</h2>
+  <p id="today"></p>
+</header>
+
+<main>
+<section id="dashboard" class="page active">
+  <div class="card hero">
+    <p>TODAY'S PROGRESS</p>
+    <strong id="progress">0%</strong>
+    <div class="track"><div class="fill" id="progressbar"></div></div>
+    <p id="progresslabel">0 of 0 activities completed</p>
+  </div>
+  <div class="stats">
+    <div class="card stat"><strong id="total">0</strong><span>Total activities</span></div>
+    <div class="card stat"><strong id="completed">0</strong><span>Completed</span></div>
+    <div class="card stat"><strong id="minutes">0</strong><span>Minutes logged</span></div>
+    <div class="card stat"><strong id="goalscount">0</strong><span>Active goals</span></div>
+  </div>
+  <div class="card">
+    <h2>Welcome to DAYNEXA 👋</h2>
+    <p class="muted">Every day is an opportunity to understand yourself and make progress.</p>
+    <button onclick="showPage('activities')">+ Add an activity</button>
+  </div>
+</section>
+
+<section id="activities" class="page">
+  <h2>My Activities</h2>
+  <div class="card">
+    <input id="activityName" placeholder="What did you do?">
+    <input id="activityTime" type="number" min="1" placeholder="Time spent (minutes)">
+    <select id="activityCategory">
+      <option>Work</option><option>Study</option><option>Health</option>
+      <option>Exercise</option><option>Family</option><option>Personal</option>
+      <option>Entertainment</option><option>Other</option>
+    </select>
+    <button onclick="addActivity()">Save activity</button>
+  </div>
+  <div class="card">
+    <h2>Today's activity list</h2>
+    <div id="activityList"></div>
+  </div>
+</section>
+
+<section id="goals" class="page">
+  <h2>My Goals</h2>
+  <div class="card">
+    <input id="goalName" placeholder="Enter your goal">
+    <button onclick="addGoal()">Add goal</button>
+  </div>
+  <div class="card"><div id="goalList"></div></div>
+</section>
+
+<section id="schedule" class="page">
+  <h2>My Schedule</h2>
+  <div class="card">
+    <input id="scheduleName" placeholder="What is planned?">
+    <input id="scheduleTime" type="time">
+    <button onclick="addSchedule()">Add to schedule</button>
+  </div>
+  <div class="card"><div id="scheduleList"></div></div>
+</section>
+
+<section id="reports" class="page">
+  <h2>My Reports</h2>
+  <div class="card">
+    <p>Total activities recorded</p>
+    <h2 id="reportTotal">0</h2>
+    <p>Total time recorded</p>
+    <h2 id="reportMinutes">0 minutes</h2>
+    <p>Activities completed</p>
+    <h2 id="reportDone">0</h2>
+    <p class="muted">These are basic reports from your saved activity records.</p>
+  </div>
+</section>
+
+<section id="privacy" class="page">
+  <h2>Privacy & Control</h2>
+  <div class="card">
+    <h3>Your data belongs to you.</h3>
+    <p class="muted">This prototype saves records locally in this browser on this device. It does not automatically track your phone usage or send your activity data to a server.</p>
+    <button class="danger" onclick="clearData()">Delete all my local data</button>
+  </div>
+</section>
+</main>
+
+<nav>
+<button class="active" onclick="showPage('dashboard',this)">⌂<br>Home</button>
+<button onclick="showPage('activities',this)">◷<br>Activities</button>
+<button onclick="showPage('goals',this)">◎<br>Goals</button>
+<button onclick="showPage('schedule',this)">▦<br>Schedule</button>
+<button onclick="showPage('reports',this)">▤<br>Reports</button>
+<button onclick="showPage('privacy',this)">♧<br>Privacy</button>
+</nav>
+
+<script>
+const todayKey = new Date().toISOString().slice(0,10);
+let data = {};
+try { data = JSON.parse(localStorage.getItem("daynexaData") || "{}"); } catch(e) {}
+data[todayKey] ||= {activities:[],goals:[],schedule:[]};
+let day = data[todayKey];
+
+document.getElementById("today").textContent =
+new Date().toLocaleDateString(undefined,{weekday:"long",year:"numeric",month:"long",day:"numeric"});
+
+function save(){
+  localStorage.setItem("daynexaData",JSON.stringify(data));
+  render();
+}
+function showPage(id,btn){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  document.querySelectorAll("nav button").forEach(b=>b.classList.remove("active"));
+  if(btn) btn.classList.add("active");
+  else document.querySelectorAll("nav button")[["dashboard","activities","goals","schedule","reports","privacy"].indexOf(id)].classList.add("active");
+}
+function addActivity(){
+  const name=document.getElementById("activityName").value.trim();
+  const time=Number(document.getElementById("activityTime").value);
+  if(!name || !Number.isFinite(time) || time<=0) return alert("Enter an activity and valid minutes.");
+  day.activities.push({name,time,category:document.getElementById("activityCategory").value,done:false});
+  document.getElementById("activityName").value="";
+  document.getElementById("activityTime").value="";
+  save();
+}
+function addGoal(){
+  const name=document.getElementById("goalName").value.trim();
+  if(!name) return;
+  day.goals.push({name,done:false});
+  document.getElementById("goalName").value="";
+  save();
+}
+function addSchedule(){
+  const name=document.getElementById("scheduleName").value.trim();
+  const time=document.getElementById("scheduleTime").value;
+  if(!name || !time) return alert("Enter an activity and time.");
+  day.schedule.push({name,time});
+  document.getElementById("scheduleName").value="";
+  save();
+}
+function toggleActivity(i){day.activities[i].done=!day.activities[i].done;save();}
+function toggleGoal(i){day.goals[i].done=!day.goals[i].done;save();}
+function removeItem(type,i){
+  if(confirm("Delete this item?")){day[type].splice(i,1);save();}
+}
+function clearData(){
+  if(confirm("Permanently delete all DAYNEXA data saved in this browser?")){
+    localStorage.removeItem("daynexaData");
+    data={};data[todayKey]={activities:[],goals:[],schedule:[]};day=data[todayKey];save();
+  }
+}
+function render(){
+  const a=day.activities,g=day.goals,s=day.schedule;
+  const done=a.filter(x=>x.done).length;
+  const mins=a.reduce((n,x)=>n+x.time,0);
+  const pct=a.length?Math.round(done/a.length*100):0;
+  document.getElementById("progress").textContent=pct+"%";
+  document.getElementById("progressbar").style.width=pct+"%";
+  document.getElementById("progresslabel").textContent=done+" of "+a.length+" activities completed";
+  document.getElementById("total").textContent=a.length;
+  document.getElementById("completed").textContent=done;
+  document.getElementById("minutes").textContent=mins;
+  document.getElementById("goalscount").textContent=g.filter(x=>!x.done).length;
+  document.getElementById("reportTotal").textContent=a.length;
+  document.getElementById("reportMinutes").textContent=mins+" minutes";
+  document.getElementById("reportDone").textContent=done;
+  document.getElementById("activityList").innerHTML=a.map((x,i)=>`
+    <div class="item row"><label><input style="width:auto" type="checkbox" ${x.done?"checked":""} onchange="toggleActivity(${i})"><span class="${x.done?"done":""}">${escapeHTML(x.name)} <small>· ${escapeHTML(x.category)}</small></span></label><span>${x.time} min <button class="danger" onclick="removeItem('activities',${i})">×</button></span></div>`).join("") || "<p class='muted'>No activities yet. Add your first one!</p>";
+  document.getElementById("goalList").innerHTML=g.map((x,i)=>`<div class="item row"><label><input style="width:auto" type="checkbox" ${x.done?"checked":""} onchange="toggleGoal(${i})">${escapeHTML(x.name)}</label><button class="danger" onclick="removeItem('goals',${i})">×</button></div>`).join("") || "<p class='muted'>No goals added yet.</p>";
+  document.getElementById("scheduleList").innerHTML=s.slice().sort((a,b)=>a.time.localeCompare(b.time)).map((x,i)=>`<div class="item row"><span>${escapeHTML(x.time)} — ${escapeHTML(x.name)}</span><button class="danger" onclick="removeItem('schedule',${i})">×</button></div>`).join("") || "<p class='muted'>Your schedule is empty.</p>";
+}
+function escapeHTML(s){
+  return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+render();
+</script>
+</body>
+</html>
